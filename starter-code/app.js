@@ -1,34 +1,45 @@
-var express = require('express');
-var path = require('path');
-var debug = require("debug");
-var logger = require('morgan');
-var mongoose = require('mongoose');
-var bodyParser = require('body-parser');
-var expressLayouts = require('express-ejs-layouts');
-var app = express();
-var router = express.Router()
+const express = require('express')
+const path = require('path')
+const debug = require('debug')
+const logger = require('morgan')
+const mongoose = require('mongoose')
+const bodyParser = require('body-parser')
+const expressLayouts = require('express-ejs-layouts')
+const methodOverride = require('method-override')
+const animalsController = require('./controllers/animals_controller')
+const app = express()
 
-var moongoose = require('mongoose');
-moongoose.connect('mongodb://localhost/animalshelter');
+mongoose.connect('mongodb://localhost/animalshelter')
+mongoose.Promise = global.Promise
 
-
-app.use(logger('dev'));
-app.use(bodyParser.urlencoded({ extended: true }));
-app.set('views', path.join(__dirname, 'views'));
+app.use(logger('dev'))
+app.use(bodyParser.urlencoded({ extended: true }))
+// what is this line for?
+app.set('public', path.join(__dirname, '/public'))
+app.use(express.static('public'))
+// app.use(express.static(path.join(__dirname + '/public')))
 app.use(expressLayouts)
-app.engine('ejs', require('ejs').renderFile);
-app.set('view engine', 'ejs');
+app.engine('ejs', require('ejs').renderFile)
+app.set('view engine', 'ejs')
+app.use(methodOverride('_method'))
+app.use('/animals', animalsController)
+
+app.get('/', (req, res) => {
+  res.render('index')
+})
 
 // development error handler
 // will print stacktrace
-if (app.get('env') === 'development') {
-  app.use(function(err, req, res, next) {
-    res.status(err.status || 500);
-    res.render('error', {
-      message: err.message,
-      error: err
-    });
-  });
-}
+// if (app.get('env') === 'development') {
+//   app.use((err, req, res, next) => {
+//     res.status(err.status || 500)
+//     res.render('error', {
+//       message: err.message,
+//       error: err
+//     })
+//   })
+// }
 
-app.listen(3000)
+app.listen(3000, () => {
+  console.log('Server listening on port 3000')
+})

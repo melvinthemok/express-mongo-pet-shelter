@@ -1,0 +1,108 @@
+<div class="container">
+  <h1>Welcome to this humble ANIMAL SHELTER</h1><br>
+  <h3>Leave us another unwanted animal, why don't you:</h3><br>
+  <form class="form-horizontal" action="/animals" method="post">
+    <div class="row">
+      <div class="col-sm-9 col-md-6">
+        <div class="form-group">
+          <label class="col-sm-3" for="name">Name</label>
+          <div class="col-sm-9">
+            <input class="form-control" type="text" id="name" name="name" placeholder="Spotty">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-9 col-md-6">
+        <div class="form-group">
+          <label class="col-sm-3" for="breed">Breed</label>
+          <div class="col-sm-9">
+            <input class="form-control" type="text" id="breed" name="breed" placeholder="Aristocrat">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-9 col-md-6">
+        <div class="form-group">
+          <label class="col-sm-3" for="gender">Date of birth</label>
+          <div class="col-sm-9">
+            <input class="form-control" type="date" id="DOB" name="DOB">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-9 col-md-6">
+        <div class="form-group">
+          <label class="col-sm-3" for="gender">Gender</label>
+          <div class="col-sm-9">
+            <input class="form-control" type="text" id="gender" name="gender" placeholder="Pondering">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-9 col-md-6">
+        <div class="form-group">
+          <label class="col-sm-3" for="family">Family</label>
+          <div class="col-sm-9">
+            <input class="form-control" type="text" id="family" name="family" placeholder="Awaiting">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-9 col-md-6">
+        <div class="form-group">
+          <label class="col-sm-3" for="family">Image URL</label>
+          <div class="col-sm-9">
+            <input class="form-control" type="text" id="imageURL:" name="imageURL" placeholder="https://www.animals.com/piggy.jpg">
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-9 col-md-6 button">
+        <button class="pull-right btn btn-md btn-warning" type="submit">Leave us your animal</button>
+      </div>
+    </div>
+  </form><br>
+  <% if (error) { %>
+    <h3><%= error %></h3>
+  <% } %>
+  <h3>Check out our wondrous animals:</h3><br>
+    <% animalsList.forEach((animal) => { %>
+      <%
+      let panelClass = ""
+      let hideAdoptButton = ""
+      let hideAbandonButton = ""
+      if (animal.status === "Abandoned") {
+        panelClass = "panel-danger"
+        hideAbandonButton = "display:none"
+      } else if (animal.status === "Adopted") {
+        panelClass = "panel-info"
+        hideAdoptButton = "display:none"
+      }
+      %>
+      <div class="panel <%= panelClass %> ">
+        <div class="panel-heading">
+          <h3 class="panel-title"> <%= animal.name %> is the name of this one</h3>
+        </div>
+        <div class="panel-body">
+          <p><%= animal.breed %> is its breed</p>
+          <p><%= animal.DOB %> is when it was born</p>
+          <p><%= animal.gender %> is its gender</p>
+          <p><%= animal.family %> is its family</p>
+          <img src="<%= animal.imageURL %>">
+        </div>
+        <div class="panel-footer">
+          <p> <%- animal.name %> is presently: <%- animal.status %> </p>
+          <form method="post" action="/animals/<%= animal._id %>?_method=PUT">
+          <button style="margin-top:-28px; <%= hideAdoptButton %>" class="btn-success pull-right btn btn-sm" type="submit" name="status" value="Adopted">Adopt <span class="glyphicon glyphicon-home"></span> </button>
+          <button style="margin-top:-28px; <%= hideAbandonButton %>" class="btn-danger pull-right btn btn-sm" type="submit" name="status" value="Abandoned">Abandon <span class="glyphicon glyphicon-road"></span> </button>
+          </form>
+        </div>
+      </div>
+    <% }) %>
+</div>
